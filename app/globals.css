@@ -1,0 +1,75 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@theme inline {
+  --color-brand: #D4AF37;
+  --color-blush: #F5E6E0;
+  --color-ivory: #FEFDFB;
+  --color-nude: #E8D7CE;
+  --color-black: #1A1A1A;
+  --color-text: #2D2D2D;
+  --color-light-gray: #F8F6F4;
+  --color-border-light: #E8D7CE;
+}
+
+:root {
+  color-scheme: light;
+  --background: #FEFDFB;
+  --foreground: #2D2D2D;
+  --accent: #D4AF37;
+  --accent-secondary: #F5E6E0;
+  --border: #E8D7CE;
+  --radius: 0;
+}
+
+@layer base {
+  * {
+    @apply border-transparent outline-none;
+  }
+  body {
+    @apply bg-[#FEFDFB] text-[#2D2D2D] font-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-semibold tracking-wide;
+  }
+  p, body {
+    @apply font-sans;
+  }
+}
+
+@keyframes lufu-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@layer components {
+  .animate-fade-up { animation: lufu-fade-up 900ms cubic-bezier(.2,.8,.2,1) both; }
+  .animate-fade-up-delay { animation: lufu-fade-up 900ms 140ms cubic-bezier(.2,.8,.2,1) both; }
+  .nav-link {
+    @apply text-sm tracking-widest uppercase transition-opacity hover:opacity-60;
+  }
+  .btn-primary {
+    @apply px-6 py-3 bg-[#1A1A1A] text-[#FEFDFB] uppercase tracking-widest text-sm font-medium transition-opacity hover:opacity-80;
+  }
+  .btn-secondary {
+    @apply px-6 py-3 border border-[#2D2D2D] text-[#2D2D2D] uppercase tracking-widest text-sm font-medium transition-all hover:bg-[#2D2D2D] hover:text-[#FEFDFB];
+  }
+  .btn-accent {
+    @apply px-6 py-3 bg-[#D4AF37] text-[#1A1A1A] uppercase tracking-widest text-sm font-medium transition-opacity hover:opacity-80;
+  }
+  .section-title {
+    @apply text-4xl md:text-5xl font-serif font-semibold tracking-tight text-[#1A1A1A] mb-8;
+  }
+  .section-subtitle {
+    @apply text-lg text-[#2D2D2D] leading-relaxed;
+  }
+  .form-input {
+    @apply block w-full border-b border-[#E8D7CE] bg-transparent py-3 mt-2 text-sm outline-none focus:border-[#D4AF37] transition-colors;
+  }
+}
+
+@supports (font-variation-settings: normal) {
+  html {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+}
