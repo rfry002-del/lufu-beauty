@@ -135,7 +135,7 @@ export function ProductCard({
 
   return (
     <article className="group w-full max-w-[290px]">
-      
+
       {/* IMAGE CARD */}
       <Link
         href={coming ? '#' : `/products/${slug}`}
@@ -199,12 +199,12 @@ export function ProductCard({
         </p>
 
         {!coming && (
-<div className="mt-4 flex items-center gap-4">
-  <a
-    href={AMAZON_URL}
-    target="_blank"
-    rel="noreferrer"
-    className="
+          <div className="mt-4 flex items-center gap-4">
+            <a
+              href={AMAZON_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="
       inline-flex items-center justify-center
       rounded-full bg-[#1A1A1A]
       px-6 py-2.5
@@ -212,13 +212,13 @@ export function ProductCard({
       transition-all duration-300
       hover:bg-[#D4AF37] hover:text-black
     "
-  >
-    Buy on Amazon
-  </a>
+            >
+              Buy on Amazon
+            </a>
 
-  <Link
-    href={`/products/${slug}`}
-    className="
+            <Link
+              href={`/products/${slug}`}
+              className="
       text-[12px]
       font-medium
       tracking-[0.08em]
@@ -230,10 +230,10 @@ export function ProductCard({
       hover:text-[#D4AF37]
       hover:border-[#D4AF37]
     "
-  >
-    View Details
-  </Link>
-</div>
+            >
+              View Details
+            </Link>
+          </div>
         )}
       </div>
     </article>
@@ -253,10 +253,10 @@ export function ProductPage({
     <PageShell>
       <main>
         <section className="max-w-7xl mx-auto px-6 py-12 md:py-20 grid md:grid-cols-2 gap-12 lg:gap-24">
-          
+
           {/* PRODUCT MEDIA */}
           <div className="grid grid-cols-2 gap-3">
-            
+
             {/* Main product image */}
             <div className="col-span-2 aspect-square relative">
               <Image
@@ -356,7 +356,7 @@ export function ProductPage({
 
         {/* PRODUCT DETAILS */}
         <section className="max-w-4xl mx-auto px-6 py-16 border-t border-[#E8D7CE] grid md:grid-cols-3 gap-10">
-          
+
           <div>
             <h3 className="text-xl mb-3">How to use</h3>
             <p className="text-sm leading-7">
@@ -384,4 +384,182 @@ export function ProductPage({
   )
 }
 
-export function ContactForm() { const [sent, setSent] = useState(false); return sent ? <div className="bg-[#F5E6E0] p-8"><h2 className="text-2xl mb-2">Thank you for reaching out.</h2><p className="text-sm">Your message has been noted. We&apos;ll be in touch soon.</p></div> : <form className="space-y-5" onSubmit={e => { e.preventDefault(); setSent(true) }}><div className="grid sm:grid-cols-2 gap-5"><label className="text-xs tracking-widest uppercase">Name<input required className="form-input" /></label><label className="text-xs tracking-widest uppercase">Email<input required type="email" className="form-input" /></label></div><label className="text-xs tracking-widest uppercase">Phone <span className="normal-case tracking-normal text-[#8E776A]">(optional)</span><input className="form-input" /></label><label className="text-xs tracking-widest uppercase">Subject<input required className="form-input" /></label><label className="text-xs tracking-widest uppercase">Message<textarea required rows={5} className="form-input resize-none" /></label><button className="btn-primary" type="submit">Send message</button></form> }
+export function ContactForm() {
+  const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
+
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: '',
+  })
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    setSending(true)
+    setError('')
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(form),
+      })
+
+const data = await response.json()
+
+console.log('CONTACT API STATUS:', response.status)
+console.log('CONTACT API RESPONSE:', data)
+
+if (!response.ok) {
+  console.error('Email error:', data)
+
+  setError(
+    data.error ||
+    `Unable to send your message. Error ${response.status}`
+  )
+
+  return
+}
+
+      setSent(true)
+    } catch (error) {
+      console.error('Contact form error:', error)
+      setError('Unable to send your message. Please try again.')
+    } finally {
+      setSending(false)
+    }
+  }
+
+  if (sent) {
+    return (
+      <div className="bg-[#F5E6E0] p-8">
+        <h2 className="text-2xl mb-2">
+          Thank you for reaching out.
+        </h2>
+
+        <p className="text-sm">
+          Your message has been sent. We&apos;ll be in touch soon.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <form className="space-y-5" onSubmit={handleSubmit}>
+      <div className="grid sm:grid-cols-2 gap-5">
+        {/* Name */}
+        <label className="text-xs tracking-widest uppercase">
+          Name
+
+          <input
+            required
+            className="form-input"
+            value={form.name}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                name: e.target.value,
+              })
+            }
+          />
+        </label>
+
+        {/* Email */}
+        <label className="text-xs tracking-widest uppercase">
+          Email
+
+          <input
+            required
+            type="email"
+            className="form-input"
+            value={form.email}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                email: e.target.value,
+              })
+            }
+          />
+        </label>
+      </div>
+
+      {/* Phone */}
+      <label className="text-xs tracking-widest uppercase">
+        Phone{' '}
+        <span className="normal-case tracking-normal text-[#8E776A]">
+          (optional)
+        </span>
+
+        <input
+          type="tel"
+          className="form-input"
+          value={form.phone}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              phone: e.target.value,
+            })
+          }
+        />
+      </label>
+
+      {/* Subject */}
+      <label className="text-xs tracking-widest uppercase">
+        Subject
+
+        <input
+          required
+          className="form-input"
+          value={form.subject}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              subject: e.target.value,
+            })
+          }
+        />
+      </label>
+
+      {/* Message */}
+      <label className="text-xs tracking-widest uppercase">
+        Message
+
+        <textarea
+          required
+          rows={5}
+          className="form-input resize-none"
+          value={form.message}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              message: e.target.value,
+            })
+          }
+        />
+      </label>
+
+      {/* Error */}
+      {error && (
+        <p className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
+
+      {/* Submit */}
+      <button
+        className="btn-primary"
+        type="submit"
+        disabled={sending}
+      >
+        {sending ? 'Sending...' : 'Send message'}
+      </button>
+    </form>
+  )
+}
